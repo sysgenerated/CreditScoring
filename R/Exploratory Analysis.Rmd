@@ -1,0 +1,117 @@
+---
+title: "R Notebook"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook:
+    toc: yes
+---
+
+
+# Load Libraries
+
+```{r}
+library(data.table)
+library(factoextra)
+```
+
+# Load Data
+
+```{r}
+full_data <- fread("../input_data.csv")
+X_data <- full_data[,-c('y')]
+y_data <- full_data[, y]
+```
+
+
+# Inspect Dependent Variable
+
+```{r}
+hist(y_data)
+```
+
+
+The min value of the dependent variable is: `r min(y_data)`.  
+The max value of the dependent variable is: `r max(y_data)`.  
+The number if missing dependent values is: `r sum(is.na(y_data))`.  
+
+
+# Inspect Independent Variable
+
+Determine if any fields in the data set are non numeric.
+
+```{r}
+# Converting non-numeric values to numeric will create an NA
+which(is.na(as.numeric(as.character(X_data[[1]]))))
+```
+
+
+Determine which columns contain nulls and what percent of values are null.
+
+```{r}
+# Calculate percent null using mean NA by column
+nullCols <- sort(colMeans(is.na(X_data)))
+nullCols[nullCols > 0]
+```
+
+
+Determine which columns have zero variance.
+
+```{r}
+# Calculate unique counts by column
+uniqueCount <- sort(rapply(X_data,function(x)length(unique(x))))
+uniqueCount[uniqueCount == 1]
+```
+
+
+Remove zero variance columns.
+
+```{r}
+# Remove four zero variance columns
+X_data <- X_data[, -c('x067', 'x094', 'x095', 'x096')]
+```
+
+
+Impute missing data using the median of each column.
+
+```{r}
+# Impute median for missing values
+replmed <- function(x) replace(x, is.na(x), median(x, na.rm = TRUE))
+X_data <- replace(X_data, TRUE, lapply(X_data, replmed))
+```
+
+
+Determine which columns are perfectly correlated with a prior column.
+
+```{r}
+corX <- (cor(X_data,X_data)==1)
+corX[lower.tri(corX, diag=TRUE)] <- FALSE
+
+## Extract the names of the redundant columns
+colnames(corX)[colSums(corX)>0]
+```
+
+
+Remove perfectly correlated columns
+
+```{r}
+# Remove one perfectly correlated column
+X_data <- X_data[, -c('x276')]
+```
+
+
+Display scree plot showing variance captured by top principal components
+
+```{r}
+#pca <- princomp(X_data, cor=TRUE, scores=FALSE)
+pca <- prcomp(X_data, center=TRUE, scale=TRUE)
+fviz_eig(pca)
+plot(summary(pca)$importance[3,], xlab="Principal Components", ylab="Cumulative Variance Explained", main="Principal Component Summary")
+```
+
