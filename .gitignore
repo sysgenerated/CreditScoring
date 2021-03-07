@@ -134,5 +134,5 @@ dmypy.json
 
 # Private
 /data
-/Instructions
+/private
 .idea
