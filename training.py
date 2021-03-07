@@ -13,9 +13,9 @@ from joblib import dump
 
 
 # model = XGBRegressor(random_state=2021)
-# model = XGBRegressor(random_state=2021, n_estimators=900, max_depth=9, learning_rate=0.1, subsample=0.4)
+model = XGBRegressor(random_state=2021, n_estimators=900, max_depth=9, learning_rate=0.1, subsample=0.4)
 # model = LGBMRegressor(random_state=2021)
-model = LGBMRegressor(random_state=2021, n_estimators=900, max_depth=9, learning_rate=0.1, subsample=0.4)
+# model = LGBMRegressor(random_state=2021, n_estimators=900, max_depth=9, learning_rate=0.1, subsample=0.4)
 
 grid_search = False
 save_model = True
@@ -69,6 +69,11 @@ def print_summary(actual, predictions, identifier):
     print("model " + identifier + " acc: %.3f" % calculate_percent_accuracy(actual, predictions))
 
 
+def save_csv(data: np.array, filename: str) -> None:
+    np.savetxt(filename, data, delimiter=",")
+    print(f"Saved data to {filename}")
+    return
+
 
 X,y = load_data("./input_data.csv")
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
@@ -105,4 +110,8 @@ print_summary(y_train, predictions_train, "train")
 print_summary(y_test, predictions_test, "test")
 
 if save_model:
+    finalized_model = generate_finalized_model(model, X, y)
+    predictions_final = generate_scaled_predictions(finalized_model, X)
+    print_summary(y, predictions_final, "final")
+    save_csv(predictions_final, "final_moodel_predictions.csv")
     dump(finalized_model, "saved_model.joblib", compress=True)
