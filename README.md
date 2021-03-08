@@ -23,12 +23,16 @@
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>
+  <br>
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
       </ul>
+    </li>
+    <li>
+      <a href="#r-markdown">R Markdown Exploration</a>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -61,11 +65,17 @@ This repository provides training and predicting python scripts for a machine le
 * [LightGBM](https://lightgbm.readthedocs.io/en/latest/index.html)
 
 
+<!-- R Markdown -->
+## R Markdown
+
+An R markdown notebook with exploratory analysis is rendered at the following link:
+
+<a href="https://sysgenerated.github.io/CreditScoring/">R Markdown</a>
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
