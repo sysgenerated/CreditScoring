@@ -97,6 +97,16 @@ Requirements can be installed via pip or conda.
    ```sh
    git clone https://github.com/sysgenerated/CreditScoring.git
    ```
+2. Install requirements
+* pip
+  ```sh
+  pip install -r requirements.txt
+  ```
+
+* conda
+  ```sh
+  conda install --file requirements.txt
+  ```
 
 
 
